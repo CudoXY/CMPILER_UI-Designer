@@ -27,7 +27,7 @@ namespace MyTestAssembly
 			if (designItem.Component.GetType() == typeof(WindowClone))
 				return retVal.Where(c => c.Name == "Title");
 
-			retVal = retVal.Where(c => c.Name == "Foreground" || c.Name == "Text" || c.Name == "Content" || c.Name == "Title");
+			retVal = retVal.Where(c => c.Name == "Text" || c.Name == "Content" || c.Name == "Title");
 
 			return retVal;
 		}
