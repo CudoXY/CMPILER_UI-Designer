@@ -110,7 +110,7 @@ namespace ICSharpCode.XamlDesigner
 		public void New()
         {
 			// Loads canvas tempalte from NewFileTemplate.xaml
-            var doc = new Document("New" + nonameIndex++, File.ReadAllText("NewFileTemplate.xaml"));
+            var doc = new Document("Untitled-" + nonameIndex++, File.ReadAllText("NewFileTemplate.xaml"));
             Documents.Add(doc);
             CurrentDocument = doc;
         }

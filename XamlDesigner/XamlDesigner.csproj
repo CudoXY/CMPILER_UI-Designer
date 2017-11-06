@@ -124,9 +124,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitmapButton.xaml.cs">
-      <DependentUpon>BitmapButton.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Configuration\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -165,10 +162,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Include="BitmapButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="DocumentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
