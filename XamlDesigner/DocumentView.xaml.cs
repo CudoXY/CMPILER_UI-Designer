@@ -29,7 +29,10 @@ namespace ICSharpCode.XamlDesigner
 			Shell.Instance.Views[doc] = this;
 
 			//uxTextEditor.DataBindings.Add("Text", doc, "Text", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged);
-			Document.Mode = DocumentMode.Design;
+
+			Document.UpdateDesign();
+			Document.RaisePropertyChanged("Mode");
+			Document.RaisePropertyChanged("InDesignMode");
 			Document.PropertyChanged += new PropertyChangedEventHandler(Document_PropertyChanged);
 			uxTextEditor.TextChanged += new EventHandler(uxTextEditor_TextChanged);
 		}
@@ -69,23 +72,5 @@ namespace ICSharpCode.XamlDesigner
 
 		public Document Document { get; private set; }
 
-		public void JumpToError(XamlError error)
-		{
-			Document.Mode = DocumentMode.Xaml;
-			try {
-				uxTextEditor.ScrollTo(error.Line, error.Column);
-				uxTextEditor.CaretOffset = uxTextEditor.Document.GetOffset(error.Line, error.Column);
-				
-				int n = 0;
-				char chr;
-				while ((chr = uxTextEditor.Document.GetCharAt(uxTextEditor.CaretOffset + n)) != ' ' && chr != '.' && chr != '<' && chr != '>' && chr != '"')
-				{ n++; }
-
-				uxTextEditor.SelectionLength = n;
-			}
-			catch (ArgumentException) {
-				// invalid line number
-			}
-		}
 	}
 }

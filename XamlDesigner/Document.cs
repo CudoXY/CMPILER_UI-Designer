@@ -49,41 +49,7 @@ namespace ICSharpCode.XamlDesigner
 				}
 			}
 		}
-
-		DocumentMode mode;
-
-		public DocumentMode Mode {
-			get {
-				return mode;
-			}
-			set {
-				mode = value;
-				if (InDesignMode) {
-					UpdateDesign();
-				}
-				else {
-					UpdateXaml();
-
-					if (this.DesignContext.Services.Selection.PrimarySelection != null)
-					{
-						var sel = this.DesignContext.Services.Selection.PrimarySelection;
-						var ln = ((PositionXmlElement) ((XamlDesignItem) sel).XamlObject.XmlElement).LineNumber;
-						Console.WriteLine(ln);
-					}
-				}
-				RaisePropertyChanged("Mode");
-				RaisePropertyChanged("InXamlMode");
-				RaisePropertyChanged("InDesignMode");
-			}
-		}
-
-		public bool InXamlMode {
-			get { return Mode == DocumentMode.Xaml; }
-		}
-
-		public bool InDesignMode {
-			get { return Mode == DocumentMode.Design; }
-		}
+		
 
 		string filePath;
 
@@ -161,11 +127,8 @@ namespace ICSharpCode.XamlDesigner
 
 		public ISelectionService SelectionService {
 			get {
-				if (InDesignMode) {
 					return DesignContext.Services.Selection;
 				}
-				return null;
-			}
 		}
 
 		public XamlErrorService XamlErrorService {
@@ -198,9 +161,7 @@ namespace ICSharpCode.XamlDesigner
 
 		public void Save()
 		{
-			if (InDesignMode) {
-				UpdateXaml();
-			}
+			UpdateXaml();
 			XamlToJsonWriter.Instance.Write(Text, FilePath);
 			IsDirty = false;
 		}
@@ -236,7 +197,7 @@ namespace ICSharpCode.XamlDesigner
 			}
 		}
 
-		void UpdateDesign()
+		public void UpdateDesign()
 		{
 			OutlineRoot = null;
 			using (var xmlReader = XmlReader.Create(new StringReader(Text))) {
@@ -263,16 +224,13 @@ namespace ICSharpCode.XamlDesigner
 		void UndoService_UndoStackChanged(object sender, EventArgs e)
 		{
 			IsDirty = true;
-			if (InXamlMode) {
-				UpdateXaml();
-			}
 		}
 
 		#region INotifyPropertyChanged Members
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		void RaisePropertyChanged(string name)
+		public void RaisePropertyChanged(string name)
 		{
 			if (PropertyChanged != null) {
 				PropertyChanged(this, new PropertyChangedEventArgs(name));
@@ -280,10 +238,5 @@ namespace ICSharpCode.XamlDesigner
 		}
 
 		#endregion
-	}
-
-	public enum DocumentMode
-	{
-		Xaml, Design
 	}
 }
