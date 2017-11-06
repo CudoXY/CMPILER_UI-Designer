@@ -22,24 +22,15 @@ namespace ICSharpCode.XamlDesigner
 		public static SimpleCommand SaveAllCommand = new SimpleCommand("Save All", ModifierKeys.Control | ModifierKeys.Shift, Key.S);
 		public static SimpleCommand ExitCommand = new SimpleCommand("Exit");
 		public static SimpleCommand RefreshCommand = new SimpleCommand("Refresh", Key.F5);
-		public static SimpleCommand RunCommand = new SimpleCommand("Run", ModifierKeys.Shift, Key.F5);
-		public static SimpleCommand RenderToBitmapCommand = new SimpleCommand("Render to Bitmap");
-
+		
 		static void RenameCommands()
 		{
-			ApplicationCommands.Open.Text = "Open...";
 			ApplicationCommands.SaveAs.Text = "Save As...";
 		}
 
 		void NewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			Shell.Instance.New();
-		}
-
-		void OpenCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-		{
-			Shell.Instance.Open();
-			AvalonDockWorkaround();
 		}
 
 		void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -71,73 +62,7 @@ namespace ICSharpCode.XamlDesigner
 		{
 			Shell.Instance.SaveAll();
 		}
-		
-		void RunCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-		{
-			StringBuilder sb = new StringBuilder();
-			var xmlWriter = XmlWriter.Create(new StringWriter(sb));
-			Shell.Instance.CurrentDocument.DesignSurface.SaveDesigner(xmlWriter);
-
-			var txt = sb.ToString();
-			var xmlReader = XmlReader.Create(new StringReader(txt));
-
-			var ctl = XamlReader.Load(xmlReader);
-
-			Window wnd = ctl as Window;
-			if (wnd == null) {
-				wnd = new Window();
-				wnd.Content = ctl;
-			}
-			wnd.Show();
-		}
-		
-		void RenderToBitmapCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-		{
-			int desiredWidth = 300;
-			int desiredHeight = 300;
-			
-			StringBuilder sb = new StringBuilder();
-			var xmlWriter = XmlWriter.Create(new StringWriter(sb));
-			Shell.Instance.CurrentDocument.DesignSurface.SaveDesigner(xmlWriter);
-
-			var txt = sb.ToString();
-			var xmlReader = XmlReader.Create(new StringReader(txt));
-
-			var ctl = XamlReader.Load(xmlReader) as Control;
-			if (ctl is Window) {
-				var wnd = ctl as Window;
-				wnd.Width = desiredWidth;
-				wnd.Height = desiredHeight;
-				wnd.Top = -10000;
-				wnd.Left = -10000;
-				wnd.Show();
-			} else {
-				ctl.Measure(new Size(desiredWidth, desiredHeight));
-				ctl.Arrange(new Rect(new Size(desiredWidth, desiredHeight)));
-			}
-			
-			RenderTargetBitmap bmp = new RenderTargetBitmap(300, 300, 96, 96, PixelFormats.Default);
-			bmp.Render(ctl);
-
-			var encoder = new PngBitmapEncoder();
-
-			encoder.Frames.Add(BitmapFrame.Create(bmp));
-
-			var dlg = new SaveFileDialog();
-			dlg.Filter = "*.png|*.png";
-			if (dlg.ShowDialog() == true) {
-				using (Stream stm = File.OpenWrite(dlg.FileName)) {
-					encoder.Save(stm);
-					stm.Flush();
-				}
-			}
-			
-			if (ctl is Window) {
-				var wnd = ctl as Window;
-				wnd.Close();
-			}
-		}
-
+	
 		void ExitCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			Shell.Instance.Exit();

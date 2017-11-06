@@ -26,7 +26,7 @@ namespace ICSharpCode.XamlDesigner
 		}
 
 		public static Shell Instance = new Shell();
-		public const string ApplicationTitle = "Xaml Designer";
+		public const string ApplicationTitle = "JSON Designer";
 
 		//public Toolbox Toolbox { get; set; }
         //public SceneTree SceneTree { get; set; }
@@ -114,36 +114,7 @@ namespace ICSharpCode.XamlDesigner
             Documents.Add(doc);
             CurrentDocument = doc;
         }
-
-		public void Open()
-        {
-			var path = MainWindow.Instance.AskOpenFileName();
-			if (path != null) {
-				Open(path);
-			}
-		}
-
-        public void Open(string path)
-        {
-			path = Path.GetFullPath(path);
-
-			if (RecentFiles.Contains(path)) {
-				RecentFiles.Remove(path);
-			}
-			RecentFiles.Insert(0, path);
-
-			foreach (var doc in Documents) {
-				if (doc.FilePath == path) {
-					CurrentDocument = doc;
-					return;
-				}
-			}
-
-            var newDoc = new Document(path);
-            Documents.Add(newDoc);
-            CurrentDocument = newDoc;
-		}		
-
+		
 		public bool Save(Document doc)
 		{
 			if (doc.IsDirty) {

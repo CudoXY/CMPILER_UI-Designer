@@ -68,12 +68,6 @@ namespace ICSharpCode.XamlDesigner
             base.OnClosing(e);
         }
 
-        void RecentFiles_Click(object sender, RoutedEventArgs e)
-        {
-            var path = (string)(e.OriginalSource as MenuItem).Header;
-            Shell.Instance.Open(path);
-        }
-
         void ProcessDrag(DragEventArgs e)
         {
             e.Effects = DragDropEffects.None;
@@ -100,22 +94,7 @@ namespace ICSharpCode.XamlDesigner
                     path.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase)) {
                     Toolbox.Instance.AddAssembly(path);
                 }
-                else if (path.EndsWith(".xaml", StringComparison.InvariantCultureIgnoreCase)) {
-                    Shell.Instance.Open(path);
-                }
             }
-        }
-
-        public string AskOpenFileName()
-        {
-            if (openFileDialog == null) {
-                openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Xaml Documents (*.xaml)|*.xaml";
-            }
-            if ((bool)openFileDialog.ShowDialog()) {
-                return openFileDialog.FileName;
-            }
-            return null;
         }
 
         public string AskSaveFileName(string initName)
@@ -130,37 +109,6 @@ namespace ICSharpCode.XamlDesigner
             }
             return null;
         }
-
-        void LoadSettings()
-        {
-            return;
-
-            WindowState = Settings.Default.MainWindowState;
-
-            Rect r = Settings.Default.MainWindowRect;
-            if (r != new Rect()) {
-                Left = r.Left;
-                Top = r.Top;
-                Width = r.Width;
-                Height = r.Height;
-            }
-
-            uxDockingManager.Loaded += delegate {
-                if (Settings.Default.AvalonDockLayout != null) {
-                    uxDockingManager.RestoreLayout(Settings.Default.AvalonDockLayout.ToStream());
-                    RestoreDocumentPaneBinding();
-                }
-            };
-        }
-        
-        private void RestoreDocumentPaneBinding()
-            {
-                    uxDocumentPane = uxDockingManager.MainDocumentPane;
-                    uxDocumentPane.SetBinding(DocumentPane.SelectedValueProperty, "CurrentDocument");
-                    uxDocumentPane.SelectedValuePath = "DataContext";
-                    AvalonDockWorkaround();
-         
-            }
         
         void SaveSettings()
         {
