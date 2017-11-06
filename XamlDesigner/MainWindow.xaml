@@ -91,7 +91,7 @@
 
 					</AvalonDock:ResizingPanel>
 
-					<AvalonDock:ResizingPanel Orientation="Vertical" ResizeWidth="200">
+					<AvalonDock:ResizingPanel Orientation="Vertical" ResizeWidth="225">
 					<AvalonDock:DockablePane AvalonDock:ResizingPanel.ResizeHeight="120">
 						<AvalonDock:DockableContent x:Name="content5" Title="Thumbnail">
 							<sd:ThumbnailView x:Name="uxThumbnailView" DesignSurface="{Binding DataContext.CurrentDocument.DesignSurface, ElementName=root, FallbackValue={x:Null}}" />
@@ -99,14 +99,6 @@
 					</AvalonDock:DockablePane>
 
 					<AvalonDock:DockablePane>
-						<AvalonDock:DockableContent x:Name="content6" Title="Behaviors">
-							<behaviorsEditor:BehaviorsEditor x:Name="uxBehaviorsView"
-							                                 SelectedItems="{Binding DataContext.CurrentDocument.SelectionService.SelectedItems, ElementName=root, FallbackValue={x:Null}}"/>
-						</AvalonDock:DockableContent>
-						<AvalonDock:DockableContent x:Name="content7" Title="Triggers">
-							<triggersEditor:TriggersEditor x:Name="uxTriggersView"
-							                               SelectedItems="{Binding DataContext.CurrentDocument.SelectionService.SelectedItems, ElementName=root, FallbackValue={x:Null}}"/>
-						</AvalonDock:DockableContent>
 						<AvalonDock:DockableContent x:Name="content4" Title="Properties" >
 							<sd:PropertyGridView x:Name="uxPropertyGridView"
 							                     SelectedItems="{Binding DataContext.CurrentDocument.SelectionService.SelectedItems, ElementName=root, FallbackValue={x:Null}}"/>
