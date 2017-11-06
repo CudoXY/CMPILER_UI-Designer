@@ -84,13 +84,6 @@ namespace ICSharpCode.XamlDesigner
 			MessageBox.Show(x.ToString());
 		}
 
-		public void JumpToError(XamlError error)
-		{
-			if (CurrentDocument != null) {
-				(Views[CurrentDocument] as DocumentView).JumpToError(error);
-			}
-		}
-
 		public bool CanRefresh()
 		{
 			return CurrentDocument != null;
@@ -116,7 +109,8 @@ namespace ICSharpCode.XamlDesigner
 
 		public void New()
         {
-            Document doc = new Document("New" + nonameIndex++, File.ReadAllText("NewFileTemplate.xaml"));
+			// Loads canvas tempalte from NewFileTemplate.xaml
+            var doc = new Document("New" + nonameIndex++, File.ReadAllText("NewFileTemplate.xaml"));
             Documents.Add(doc);
             CurrentDocument = doc;
         }

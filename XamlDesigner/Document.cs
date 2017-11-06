@@ -12,6 +12,7 @@ using ICSharpCode.WpfDesign;
 using ICSharpCode.WpfDesign.Designer.Services;
 using System.Diagnostics;
 using ICSharpCode.WpfDesign.XamlDom;
+using ICSharpCode.XamlDesigner.IO;
 using MyTestAssembly;
 
 namespace ICSharpCode.XamlDesigner
@@ -200,7 +201,7 @@ namespace ICSharpCode.XamlDesigner
 			if (InDesignMode) {
 				UpdateXaml();
 			}
-			File.WriteAllText(FilePath, Text);
+			XamlToJsonWriter.Instance.Write(Text, FilePath);
 			IsDirty = false;
 		}
 
@@ -221,7 +222,6 @@ namespace ICSharpCode.XamlDesigner
 			var sb = new StringBuilder();
 			using (var xmlWriter = new XamlXmlWriter(sb)) {
 				DesignSurface.SaveDesigner(xmlWriter);
-
 				Dictionary<XamlElementLineInfo, XamlElementLineInfo> d;
 				Text = XamlFormatter.Format(sb.ToString(), out d);
 

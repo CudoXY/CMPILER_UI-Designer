@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Windows;
+using ICSharpCode.WpfDesign.Designer.Controls;
 using ICSharpCode.WpfDesign.PropertyGrid;
 
 namespace MyTestAssembly
@@ -22,7 +24,10 @@ namespace MyTestAssembly
 		{
 			var retVal = TypeHelper.GetAvailableProperties(designItem.Component);
 
-			retVal = retVal.Where(c => c.Name == "Foreground" || c.Name == "Text" || c.Name == "Content");
+			if (designItem.Component.GetType() == typeof(WindowClone))
+				return retVal.Where(c => c.Name == "Title");
+
+			retVal = retVal.Where(c => c.Name == "Foreground" || c.Name == "Text" || c.Name == "Content" || c.Name == "Title");
 
 			return retVal;
 		}

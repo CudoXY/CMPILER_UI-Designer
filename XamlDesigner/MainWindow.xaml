@@ -96,7 +96,6 @@
 		<AvalonDock:DockingManager x:Name="uxDockingManager">
 			<AvalonDock:ResizingPanel Orientation="Horizontal">
 
-				<AvalonDock:ResizingPanel Orientation="Vertical">
 					<AvalonDock:ResizingPanel Orientation="Horizontal">
 						<AvalonDock:DockablePane AvalonDock:ResizingPanel.ResizeWidth="150">
 							<AvalonDock:DockableContent x:Name="content2" Title="Outline">
@@ -113,16 +112,7 @@
 
 					</AvalonDock:ResizingPanel>
 
-
-					<AvalonDock:DockablePane AvalonDock:ResizingPanel.ResizeHeight="150">
-						<AvalonDock:DockableContent x:Name="content3" Title="Errors">
-							<Default:ErrorListView ItemsSource="{Binding CurrentDocument.XamlErrorService.Errors}"/>
-						</AvalonDock:DockableContent>
-					</AvalonDock:DockablePane>
-
-				</AvalonDock:ResizingPanel>
-
-				<AvalonDock:ResizingPanel Orientation="Vertical" ResizeWidth="200">
+					<AvalonDock:ResizingPanel Orientation="Vertical" ResizeWidth="200">
 					<AvalonDock:DockablePane AvalonDock:ResizingPanel.ResizeHeight="120">
 						<AvalonDock:DockableContent x:Name="content5" Title="Thumbnail">
 							<sd:ThumbnailView x:Name="uxThumbnailView" DesignSurface="{Binding DataContext.CurrentDocument.DesignSurface, ElementName=root, FallbackValue={x:Null}}" />

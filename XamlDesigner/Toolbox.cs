@@ -10,7 +10,6 @@ using System.Collections.Specialized;
 using System.Reflection.Emit;
 using System.Windows.Controls;
 using ICSharpCode.WpfDesign;
-using ICSharpCode.XamlDesigner.IO;
 using Label = System.Windows.Controls.Label;
 
 namespace ICSharpCode.XamlDesigner
