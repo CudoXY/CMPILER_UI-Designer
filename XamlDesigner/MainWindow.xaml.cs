@@ -14,133 +14,158 @@ using MyTestAssembly;
 
 namespace ICSharpCode.XamlDesigner
 {
-    public partial class MainWindow
-    {
-        public MainWindow()
-        {
-            Instance = this;
-            DataContext = Shell.Instance;
-            RenameCommands();
-            BasicMetadata.Register();
+	public partial class MainWindow
+	{
+		public MainWindow()
+		{
+			Instance = this;
+			DataContext = Shell.Instance;
+			RenameCommands();
+			BasicMetadata.Register();
 
-            InitializeComponent();
+			InitializeComponent();
 
-            Shell.Instance.PropertyGrid = uxPropertyGridView.PropertyGrid;
-            AvalonDockWorkaround();
-            RouteDesignSurfaceCommands();
+			Shell.Instance.PropertyGrid = uxPropertyGridView.PropertyGrid;
+			AvalonDockWorkaround();
+			RouteDesignSurfaceCommands();
 
-            this.AddCommandHandler(RefreshCommand, Shell.Instance.Refresh, Shell.Instance.CanRefresh);
+			this.AddCommandHandler(RefreshCommand, Shell.Instance.Refresh, Shell.Instance.CanRefresh);
 
-//            LoadSettings();
-//            ProcessPaths(App.Args);
-            
-            ApplicationCommands.New.Execute(null, this);
+			//            LoadSettings();
+			//            ProcessPaths(App.Args);
+
+			ApplicationCommands.New.Execute(null, this);
 		}
 
-        public static MainWindow Instance;
+		public static MainWindow Instance;
 
-        OpenFileDialog openFileDialog;
-        SaveFileDialog saveFileDialog;
+		OpenFileDialog openFileDialog;
+		SaveFileDialog saveFileDialog;
 
-        protected override void OnDragEnter(DragEventArgs e)
-        {
-            ProcessDrag(e);
-        }
+		protected override void OnDragEnter(DragEventArgs e)
+		{
+			ProcessDrag(e);
+		}
 
-        protected override void OnDragOver(DragEventArgs e)
-        {
-            ProcessDrag(e);
-        }
+		protected override void OnDragOver(DragEventArgs e)
+		{
+			ProcessDrag(e);
+		}
 
-        protected override void OnDrop(DragEventArgs e)
-        {
-            ProcessPaths(e.Data.Paths());
-        }
+		protected override void OnDrop(DragEventArgs e)
+		{
+			ProcessPaths(e.Data.Paths());
+		}
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (Shell.Instance.PrepareExit()) {
-                SaveSettings();
-            }
-            else {
-                e.Cancel = true;
-            }
-            base.OnClosing(e);
-        }
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			if (Shell.Instance.PrepareExit())
+			{
+				SaveSettings();
+			}
+			else
+			{
+				e.Cancel = true;
+			}
+			base.OnClosing(e);
+		}
 
-        void ProcessDrag(DragEventArgs e)
-        {
-            e.Effects = DragDropEffects.None;
-            e.Handled = true;
+		void ProcessDrag(DragEventArgs e)
+		{
+			e.Effects = DragDropEffects.None;
+			e.Handled = true;
 
-            foreach (var path in e.Data.Paths()) {
-                if (path.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) ||
-                    path.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase)) {
-                    e.Effects = DragDropEffects.Copy;
-                    break;
-                }
-                else if (path.EndsWith(".xaml", StringComparison.InvariantCultureIgnoreCase)) {
-                    e.Effects = DragDropEffects.Copy;
-                    break;
-                }
-            }
-        }
+			foreach (var path in e.Data.Paths())
+			{
+				if (path.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) ||
+					path.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
+				{
+					e.Effects = DragDropEffects.Copy;
+					break;
+				}
+				else if (path.EndsWith(".xaml", StringComparison.InvariantCultureIgnoreCase))
+				{
+					e.Effects = DragDropEffects.Copy;
+					break;
+				}
+			}
+		}
 
-        void ProcessPaths(IEnumerable<string> paths)
-        {
+		void ProcessPaths(IEnumerable<string> paths)
+		{
 			// TODO: Remove
-            foreach (var path in paths) {
-                if (path.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) ||
-                    path.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase)) {
-                    Toolbox.Instance.AddAssembly(path);
-                }
-            }
-        }
+			foreach (var path in paths)
+			{
+				if (path.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) ||
+					path.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
+				{
+					Toolbox.Instance.AddAssembly(path);
+				}
+			}
+		}
 
-        public string AskSaveFileName(string initName)
-        {
-            if (saveFileDialog == null) {
-                saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "JSON File (*.json)|*.json";
-            }
-            saveFileDialog.FileName = initName;
-            if ((bool)saveFileDialog.ShowDialog()) {
-                return saveFileDialog.FileName;
-            }
-            return null;
-        }
-        
-        void SaveSettings()
-        {
-            Settings.Default.MainWindowState = WindowState;
-            if (WindowState == WindowState.Normal) {
-                Settings.Default.MainWindowRect = new Rect(Left, Top, Width, Height);
-            }
+		public string AskOpenFileName()
+		{
+			if (openFileDialog == null)
+			{
+				openFileDialog = new OpenFileDialog();
+				openFileDialog.Filter = "JSON Documents (*.json)|*.json";
+			}
+			if ((bool)openFileDialog.ShowDialog())
+			{
+				return openFileDialog.FileName;
+			}
+			return null;
+		}
 
-            var writer = new StringWriter();
-            uxDockingManager.SaveLayout(writer);
-            Settings.Default.AvalonDockLayout = writer.ToString();
+		public string AskSaveFileName(string initName)
+		{
+			if (saveFileDialog == null)
+			{
+				saveFileDialog = new SaveFileDialog();
+				saveFileDialog.Filter = "JSON File (*.json)|*.json";
+			}
+			saveFileDialog.FileName = initName;
+			if ((bool)saveFileDialog.ShowDialog())
+			{
+				return saveFileDialog.FileName;
+			}
+			return null;
+		}
 
-            Shell.Instance.SaveSettings();
-        }
+		void SaveSettings()
+		{
+			Settings.Default.MainWindowState = WindowState;
+			if (WindowState == WindowState.Normal)
+			{
+				Settings.Default.MainWindowRect = new Rect(Left, Top, Width, Height);
+			}
 
-        #region AvalonDockWorkaround
+			var writer = new StringWriter();
+			uxDockingManager.SaveLayout(writer);
+			Settings.Default.AvalonDockLayout = writer.ToString();
 
-        void AvalonDockWorkaround()
-        {
-            uxDocumentPane.Items.KeepSyncronizedWith(Shell.Instance.Documents, d => CreateContentFor(d));
-        }
+			Shell.Instance.SaveSettings();
+		}
 
-        DocumentContent CreateContentFor(Document doc)
-        {
-            var content = new DocumentContent() {
-                DataContext = doc,
-                Content = new DocumentView(doc)
-            };
-            content.SetBinding(DocumentContent.TitleProperty, "Title");
-            return content;
-        }
+		#region AvalonDockWorkaround
 
-        #endregion
-    }
+		void AvalonDockWorkaround()
+		{
+			uxDocumentPane.Items.KeepSyncronizedWith(Shell.Instance.Documents, d => CreateContentFor(d));
+		}
+
+		DocumentContent CreateContentFor(Document doc)
+		{
+			var content = new DocumentContent()
+			{
+				DataContext = doc,
+				Content = new DocumentView(doc)
+			};
+			content.SetBinding(DocumentContent.TitleProperty, "Title");
+			return content;
+		}
+
+		#endregion
+	}
 }

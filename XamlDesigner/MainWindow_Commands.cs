@@ -22,15 +22,22 @@ namespace ICSharpCode.XamlDesigner
 		public static SimpleCommand SaveAllCommand = new SimpleCommand("Save All", ModifierKeys.Control | ModifierKeys.Shift, Key.S);
 		public static SimpleCommand ExitCommand = new SimpleCommand("Exit");
 		public static SimpleCommand RefreshCommand = new SimpleCommand("Refresh", Key.F5);
-		
+
 		static void RenameCommands()
 		{
+			ApplicationCommands.Open.Text = "Open...";
 			ApplicationCommands.SaveAs.Text = "Save As...";
 		}
 
 		void NewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			Shell.Instance.New();
+		}
+
+		void OpenCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			Shell.Instance.Open();
+			AvalonDockWorkaround();
 		}
 
 		void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -62,7 +69,7 @@ namespace ICSharpCode.XamlDesigner
 		{
 			Shell.Instance.SaveAll();
 		}
-	
+
 		void ExitCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			Shell.Instance.Exit();
@@ -87,14 +94,19 @@ namespace ICSharpCode.XamlDesigner
 		void RouteDesignSurfaceCommand(RoutedCommand command)
 		{
 			var cb = new CommandBinding(command);
-			cb.CanExecute += delegate(object sender, CanExecuteRoutedEventArgs e) {
-				if (Shell.Instance.CurrentDocument != null) {
+			cb.CanExecute += delegate (object sender, CanExecuteRoutedEventArgs e)
+			{
+				if (Shell.Instance.CurrentDocument != null)
+				{
 					Shell.Instance.CurrentDocument.DesignSurface.RaiseEvent(e);
-				}else {
+				}
+				else
+				{
 					e.CanExecute = false;
 				}
 			};
-			cb.Executed += delegate(object sender, ExecutedRoutedEventArgs e) {
+			cb.Executed += delegate (object sender, ExecutedRoutedEventArgs e)
+			{
 				Shell.Instance.CurrentDocument.DesignSurface.RaiseEvent(e);
 			};
 			CommandBindings.Add(cb);

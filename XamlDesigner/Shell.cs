@@ -29,30 +29,36 @@ namespace ICSharpCode.XamlDesigner
 		public const string ApplicationTitle = "JSON Designer";
 
 		//public Toolbox Toolbox { get; set; }
-        //public SceneTree SceneTree { get; set; }
-        public IPropertyGrid PropertyGrid { get; internal set; }
-        //public ErrorList ErrorList { get; set; }
-		
+		//public SceneTree SceneTree { get; set; }
+		public IPropertyGrid PropertyGrid { get; internal set; }
+		//public ErrorList ErrorList { get; set; }
+
 		public ObservableCollection<Document> Documents { get; private set; }
-		public ObservableCollection<string> RecentFiles { get; private set; }		
+		public ObservableCollection<string> RecentFiles { get; private set; }
 		public Dictionary<object, FrameworkElement> Views { get; private set; }
 
 		Document currentDocument;
 
-		public Document CurrentDocument {
-			get {
+		public Document CurrentDocument
+		{
+			get
+			{
 				return currentDocument;
 			}
-			set {
+			set
+			{
 				currentDocument = value;
 				RaisePropertyChanged("CurrentDocument");
 				RaisePropertyChanged("Title");
 			}
 		}
 
-		public string Title {
-			get {
-				if (CurrentDocument != null) {
+		public string Title
+		{
+			get
+			{
+				if (CurrentDocument != null)
+				{
 					return CurrentDocument.Title + " - " + ApplicationTitle;
 				}
 				return ApplicationTitle;
@@ -61,20 +67,57 @@ namespace ICSharpCode.XamlDesigner
 
 		void LoadSettings()
 		{
-			if (Settings.Default.RecentFiles != null) {
+			if (Settings.Default.RecentFiles != null)
+			{
 				RecentFiles.AddRange(Settings.Default.RecentFiles.Cast<string>());
 			}
 		}
 
+		public void Open()
+		{
+			var path = MainWindow.Instance.AskOpenFileName();
+			if (path != null)
+			{
+				Open(path);
+			}
+		}
+
+		public void Open(string path)
+		{
+			path = Path.GetFullPath(path);
+
+			if (RecentFiles.Contains(path))
+			{
+				RecentFiles.Remove(path);
+			}
+			RecentFiles.Insert(0, path);
+
+			foreach (var doc in Documents)
+			{
+				if (doc.FilePath == path)
+				{
+					CurrentDocument = doc;
+					return;
+				}
+			}
+
+			var newDoc = new Document(path);
+			Documents.Add(newDoc);
+			CurrentDocument = newDoc;
+		}
+
 		public void SaveSettings()
 		{
-			if (Settings.Default.RecentFiles == null) {
+			if (Settings.Default.RecentFiles == null)
+			{
 				Settings.Default.RecentFiles = new StringCollection();
 			}
-			else {
+			else
+			{
 				Settings.Default.RecentFiles.Clear();
 			}
-			foreach (var f in RecentFiles) {
+			foreach (var f in RecentFiles)
+			{
 				Settings.Default.RecentFiles.Add(f);
 			}
 		}
@@ -96,9 +139,12 @@ namespace ICSharpCode.XamlDesigner
 
 		#region Files
 
-		bool IsSomethingDirty {
-			get {
-				foreach (var doc in Shell.Instance.Documents) {
+		bool IsSomethingDirty
+		{
+			get
+			{
+				foreach (var doc in Shell.Instance.Documents)
+				{
 					if (doc.IsDirty) return true;
 				}
 				return false;
@@ -108,17 +154,19 @@ namespace ICSharpCode.XamlDesigner
 		static int nonameIndex = 1;
 
 		public void New()
-        {
+		{
 			// Loads canvas tempalte from NewFileTemplate.xaml
-            var doc = new Document("Untitled-" + nonameIndex++, File.ReadAllText("NewFileTemplate.xaml"));
-            Documents.Add(doc);
-            CurrentDocument = doc;
-        }
-		
+			var doc = new Document("Untitled-" + nonameIndex++, File.ReadAllText("NewFileTemplate.xaml"));
+			Documents.Add(doc);
+			CurrentDocument = doc;
+		}
+
 		public bool Save(Document doc)
 		{
-			if (doc.IsDirty) {
-				if (doc.FilePath == null) {
+			if (doc.IsDirty)
+			{
+				if (doc.FilePath == null)
+				{
 					return SaveAs(doc);
 				}
 				doc.Save();
@@ -130,7 +178,8 @@ namespace ICSharpCode.XamlDesigner
 		{
 			var initName = doc.FileName ?? doc.Name + ".json";
 			var path = MainWindow.Instance.AskSaveFileName(initName);
-			if (path != null)  {
+			if (path != null)
+			{
 				doc.SaveAs(path);
 				return true;
 			}
@@ -139,7 +188,8 @@ namespace ICSharpCode.XamlDesigner
 
 		public bool SaveAll()
 		{
-			foreach (var doc in Documents) {
+			foreach (var doc in Documents)
+			{
 				if (!Save(doc)) return false;
 			}
 			return true;
@@ -147,14 +197,17 @@ namespace ICSharpCode.XamlDesigner
 
 		public bool Close(Document doc)
 		{
-			if (doc.IsDirty) {
-				var result = MessageBox.Show("Save \"" + doc.Name + "\" ?", Shell.ApplicationTitle, 
+			if (doc.IsDirty)
+			{
+				var result = MessageBox.Show("Save \"" + doc.Name + "\" ?", Shell.ApplicationTitle,
 					MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
-				if (result == MessageBoxResult.Yes) {
+				if (result == MessageBoxResult.Yes)
+				{
 					if (!Save(doc)) return false;
 				}
-				else if (result == MessageBoxResult.Cancel) {
+				else if (result == MessageBoxResult.Cancel)
+				{
 					return false;
 				}
 			}
@@ -165,7 +218,8 @@ namespace ICSharpCode.XamlDesigner
 
 		public bool CloseAll()
 		{
-			foreach (var doc in Documents.ToArray()) {
+			foreach (var doc in Documents.ToArray())
+			{
 				if (!Close(doc)) return false;
 			}
 			return true;
@@ -173,14 +227,17 @@ namespace ICSharpCode.XamlDesigner
 
 		public bool PrepareExit()
 		{
-			if (IsSomethingDirty) {
+			if (IsSomethingDirty)
+			{
 				var result = MessageBox.Show("Save All?", Shell.ApplicationTitle,
 					MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
-				
-				if (result == MessageBoxResult.Yes) {
+
+				if (result == MessageBoxResult.Yes)
+				{
 					if (!SaveAll()) return false;
 				}
-				else if (result == MessageBoxResult.Cancel) {
+				else if (result == MessageBoxResult.Cancel)
+				{
 					return false;
 				}
 			}
@@ -215,7 +272,8 @@ namespace ICSharpCode.XamlDesigner
 
 		void RaisePropertyChanged(string name)
 		{
-			if (PropertyChanged != null) {
+			if (PropertyChanged != null)
+			{
 				PropertyChanged(this, new PropertyChangedEventArgs(name));
 			}
 		}

@@ -154,7 +154,7 @@ namespace ICSharpCode.XamlDesigner
 
 		void ReloadFile()
 		{
-			Text = File.ReadAllText(FilePath);
+			Text = JsonToXamlReader.Instance.Read(FilePath);
 			UpdateDesign();
 			IsDirty = false;
 		}

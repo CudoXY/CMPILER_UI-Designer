@@ -18,6 +18,10 @@
 		<CommandBinding Command="New"
 		                Executed="NewCommand_Executed" />
 
+		<CommandBinding Command="Open"		
+		                Executed="OpenCommand_Executed" />
+
+
 		<CommandBinding Command="Close"
 		                Executed="CloseCommand_Executed"
 		                CanExecute="CurrentDocument_CanExecute"
@@ -48,6 +52,7 @@
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="File">
 				<MenuItem Command="New" />
+				<MenuItem Command="Open" />
 				<Separator />
 				<MenuItem Command="Close" />
 				<MenuItem Command="Default:MainWindow.CloseAllCommand" />
